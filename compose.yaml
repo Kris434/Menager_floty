@@ -1,0 +1,7 @@
+﻿services:
+  menager_floty:
+    image: menager_floty
+    build:
+      context: .
+      dockerfile: Menager_floty/Dockerfile
+

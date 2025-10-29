@@ -1,0 +1,6 @@
+@Menager_floty_HostAddress = http://localhost:5149
+
+GET {{Menager_floty_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
