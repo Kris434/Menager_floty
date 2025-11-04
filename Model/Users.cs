@@ -21,4 +21,6 @@ public class Users
     
     [MaxLength(50)]
     public string? LastName { get; set; }
+    
+    public List<Cars> Car { get; set; }
 }
