@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251113113207_DbUpdate v0.1")]
+    partial class DbUpdatev01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace DAL.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Model.Car", b =>
+            modelBuilder.Entity("Model.Cars", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -38,42 +41,17 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UsersId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UsersId");
 
-                    b.ToTable("Car");
+                    b.ToTable("Cars");
                 });
 
-            modelBuilder.Entity("Model.CarInspection", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CarId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("DateOfInpection")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Mileage")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("ValidUntil")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CarInspections");
-                });
-
-            modelBuilder.Entity("Model.User", b =>
+            modelBuilder.Entity("Model.Users", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,21 +78,19 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Model.Car", b =>
+            modelBuilder.Entity("Model.Cars", b =>
                 {
-                    b.HasOne("Model.User", null)
-                        .WithMany("Cars")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Model.Users", null)
+                        .WithMany("Car")
+                        .HasForeignKey("UsersId");
                 });
 
-            modelBuilder.Entity("Model.User", b =>
+            modelBuilder.Entity("Model.Users", b =>
                 {
-                    b.Navigation("Cars");
+                    b.Navigation("Car");
                 });
 #pragma warning restore 612, 618
         }

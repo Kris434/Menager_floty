@@ -7,8 +7,10 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    public DbSet<Users> Users { get; set; }
+    public DbSet<User> User { get; set; }
     
-    public DbSet<Cars> Cars { get; set; }
+    public DbSet<Car> Car { get; set; }
+    
+    public DbSet<CarInspection> CarInspections { get; set; }
     
 }

@@ -1,3 +1,5 @@
+using BLL;
+using BLL.Interfaces;
 using DAL;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICarsRepository, CarsRepository>();
+builder.Services.AddScoped<ICarInspectionRepository, CarInspectionRepository>();
+
+builder.Services.AddScoped<IUserService,  UserService>();
+builder.Services.AddScoped<ICarService,  CarService>();
+builder.Services.AddScoped<ICarInspectionService, CarInspectionService>();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 

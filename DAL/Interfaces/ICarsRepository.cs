@@ -4,6 +4,7 @@ namespace DAL.Interfaces;
 
 public interface ICarsRepository
 {
-    Task<Cars> GetCarById(int id);
-    Task AddCar(Cars car);
+    Task<IQueryable<Car>> GetAll();
+    Task<Car> GetCarById(int id);
+    Task AddCar(Car car);
 }

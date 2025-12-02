@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Model;
 
-public class Users
+public class User
 {
     [Key]
     public int Id { get; set; } 
@@ -13,7 +13,6 @@ public class Users
     public string Email { get; set; }
     
     [Required]
-    [MaxLength(100)]
     public string Password { get; set; }
     
     [MaxLength(50)]
@@ -22,5 +21,5 @@ public class Users
     [MaxLength(50)]
     public string? LastName { get; set; }
     
-    public List<Cars> Car { get; set; }
+    public ICollection<Car> Cars { get; set; } = new List<Car>();
 }

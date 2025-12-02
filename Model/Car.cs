@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Model;
 
-public class Cars
+public class Car
 {
     [Key]
     public int Id { get; set; }
@@ -12,4 +12,6 @@ public class Cars
     
     [Required]
     public string Plate { get; set; }
+    
+    public int UserId { get; set; }
 }
