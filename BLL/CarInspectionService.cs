@@ -1,5 +1,6 @@
 using BLL.Interfaces;
 using DAL.Interfaces;
+using Model;
 
 namespace BLL;
 
@@ -16,6 +17,12 @@ public class CarInspectionService : ICarInspectionService
     {
         var inspection = await _repo.GetAllByCarId(carId);
 
-        return inspection.OrderBy(i => i.ValidUntil).First().ValidUntil > DateTime.Now;
+        return inspection.OrderBy(i => i.ValidUntil).Last().ValidUntil > DateTime.Now;
+    }
+
+    public async Task<List<CarInspection>> GetAllByCarId(int carId)
+    {
+        var result = await _repo.GetAllByCarId(carId);
+        return result.ToList();
     }
 }

@@ -13,4 +13,12 @@ public class AppDbContext : DbContext
     
     public DbSet<CarInspection> CarInspections { get; set; }
     
+    public DbSet<Trailer> Trailer { get; set; }
+    
+    public DbSet<TrailerInspection> TrailerInspection { get; set; }
+    
+    public DbSet<TrailerRefrigeratorInspections> TrailerAgregatInspections { get; set; }
+    
+    public DbSet<Branch> Branches { get; set; }
+    
 }

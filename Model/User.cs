@@ -21,5 +21,5 @@ public class User
     [MaxLength(50)]
     public string? LastName { get; set; }
     
-    public ICollection<Car> Cars { get; set; } = new List<Car>();
+    public List<Branch> Branches { get; set; }
 }

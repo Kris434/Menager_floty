@@ -15,7 +15,8 @@ public class UserService : IUserService
     
     public async Task AddUser(User user)
     {
-        user.Password = PasswordHash.Hash(user.Password);
+        if(user.Password != null)
+            user.Password = PasswordHash.Hash(user.Password);
         
         await _userRepository.AddUser(user);
     }
@@ -23,6 +24,8 @@ public class UserService : IUserService
     public async Task<User> GetUserByEmail(string email)
     {
         var result = await _userRepository.GetUser(email);
+        
+        if(result == null) throw new Exception("User not found");
         
         return result;
     }

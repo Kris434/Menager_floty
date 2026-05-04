@@ -17,13 +17,14 @@ public class CarService : ICarService
     public async Task<Car> GetById(int id)
     {
         var result = await _repo.GetCarById(id);
+        
         return result;
     }
 
-    public async Task<List<Car>> GetByUser(int id)
+    public async Task<List<Car>> GetByBranch(int id)
     {
         var result = await _repo.GetAll();
-        result = result.Where(c => c.UserId == id);
+        result = result.Where(c => c.BranchId == id);
         
         return result.ToList();
     }

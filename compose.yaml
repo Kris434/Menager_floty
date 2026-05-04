@@ -1,7 +1,49 @@
 ﻿services:
   menager_floty:
-    image: menager_floty
+    image: menager_floty-dev
+    container_name: menager_floty_app
     build:
       context: .
       dockerfile: Menager_floty/Dockerfile
+      target: dev
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=menagerFloty;Username=postgres;Password=root
+      Jwt__Key: BardzoSekretnyKluczMinimum32ZnakiDev
+      Jwt__Issuer: Backend
+      Jwt__Audience: Frontend
+      Jwt__ExpiresInMinutes: 60
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    volumes:
+      - .:/src
+      - menager_floty_nuget:/root/.nuget/packages
+    working_dir: /src/Menager_floty
+    command: dotnet watch run --project Menager_floty.csproj --urls http://+:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: menager_floty_postgres
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: menagerFloty
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    volumes:
+      - menager_floty_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d menagerFloty"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  menager_floty_postgres_data:
+  menager_floty_nuget:

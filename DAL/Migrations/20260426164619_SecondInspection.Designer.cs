@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260426164619_SecondInspection")]
+    partial class SecondInspection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,28 +24,6 @@ namespace DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Model.Branch", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BranchName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Branches");
-                });
 
             modelBuilder.Entity("Model.Car", b =>
                 {
@@ -52,9 +33,6 @@ namespace DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BranchId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -63,9 +41,12 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("BranchId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Car");
                 });
@@ -105,25 +86,14 @@ namespace DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BranchId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Capacity")
                         .HasColumnType("integer");
-
-                    b.Property<int>("FuelLevel")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsBlocked")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Plate")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BranchId");
 
                     b.ToTable("Trailer");
                 });
@@ -142,15 +112,10 @@ namespace DAL.Migrations
                     b.Property<int>("MotoHours")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TrailerId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("ValidUntil")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TrailerId");
 
                     b.ToTable("TrailerAgregatInspections");
                 });
@@ -209,20 +174,11 @@ namespace DAL.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Model.Branch", b =>
-                {
-                    b.HasOne("Model.User", null)
-                        .WithMany("Branches")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Model.Car", b =>
                 {
-                    b.HasOne("Model.Branch", null)
+                    b.HasOne("Model.User", null)
                         .WithMany("Cars")
-                        .HasForeignKey("BranchId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -236,24 +192,6 @@ namespace DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Model.Trailer", b =>
-                {
-                    b.HasOne("Model.Branch", null)
-                        .WithMany("Trailers")
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Model.TrailerAgregatInspections", b =>
-                {
-                    b.HasOne("Model.Trailer", null)
-                        .WithMany("AgregatInspectionId")
-                        .HasForeignKey("TrailerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Model.TrailerInspection", b =>
                 {
                     b.HasOne("Model.Trailer", null)
@@ -263,13 +201,6 @@ namespace DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Model.Branch", b =>
-                {
-                    b.Navigation("Cars");
-
-                    b.Navigation("Trailers");
-                });
-
             modelBuilder.Entity("Model.Car", b =>
                 {
                     b.Navigation("InspectionId");
@@ -277,14 +208,12 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("Model.Trailer", b =>
                 {
-                    b.Navigation("AgregatInspectionId");
-
                     b.Navigation("InspectionId");
                 });
 
             modelBuilder.Entity("Model.User", b =>
                 {
-                    b.Navigation("Branches");
+                    b.Navigation("Cars");
                 });
 #pragma warning restore 612, 618
         }

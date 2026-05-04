@@ -13,5 +13,7 @@ public class Car
     [Required]
     public string Plate { get; set; }
     
-    public int UserId { get; set; }
+    public List<CarInspection>? InspectionId { get; set; }
+
+    public int BranchId { get; set; }
 }

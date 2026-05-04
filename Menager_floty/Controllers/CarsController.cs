@@ -10,17 +10,17 @@ namespace Menager_floty.Controllers;
 [Route("api/[controller]")]
 public class CarsController : ControllerBase
 {
-    private readonly ICarService _carsRepository;
+    private readonly ICarService _carsService;
     
-    public CarsController(ICarService carsRepository)
+    public CarsController(ICarService carsService)
     {
-        _carsRepository = carsRepository;
+        _carsService = carsService;
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        var result = await _carsRepository.GetById(id);
+        var result = await _carsService.GetById(id);
 
         return Ok(result);
     }
@@ -28,7 +28,7 @@ public class CarsController : ControllerBase
     [HttpGet("{id}/cars")]
     public async Task<IActionResult> GetByUser(int id)
     {
-        var result = await _carsRepository.GetByUser(id);
+        var result = await _carsService.GetByBranch(id);
         
         if(result != null)
             return Ok(result);
@@ -36,7 +36,7 @@ public class CarsController : ControllerBase
             return NotFound();
     }
 
-    [HttpPost] // ToDo: Tutaj trzeba dodać id aktualnie zalogowanego usera. Aktualnie dodanie pojazdu nie przypisuje go do nikogo
+    [HttpPost]
     public async Task<IActionResult> Post([FromBody] CarDto dto)
     {
         Car car = new()
@@ -44,10 +44,10 @@ public class CarsController : ControllerBase
             Id = dto.Id,
             Name = dto.Name,
             Plate = dto.Plate,
-            UserId = dto.UserId
+            BranchId = dto.BranchId
         };
         
-        await _carsRepository.Add(car);
+        await _carsService.Add(car);
         
         return Created($"api/cars/{car.Id}", car);
     }

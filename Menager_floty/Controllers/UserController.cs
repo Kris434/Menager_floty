@@ -1,6 +1,8 @@
+using BLL;
 using BLL.Interfaces;
 using DAL.Dto;
 using DAL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 
@@ -11,12 +13,15 @@ namespace Menager_floty.Controllers;
 public class UserController : ControllerBase
 {
     private IUserService _users;
+    private JwtTokenService jwtTokenService;
     
-    public UserController(IUserService users)
+    public UserController(IUserService users, JwtTokenService jwt)
     {
         _users = users;
+        jwtTokenService = jwt;
     }
 
+    [Authorize]
     [HttpGet("{email}")]
     public async Task<IActionResult> getUser(string email)
     {
@@ -43,5 +48,23 @@ public class UserController : ControllerBase
         await _users.AddUser(user);
         
         return CreatedAtAction(nameof(getUser), new { email = user.Email }, user);
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginDto loginRequest)
+    {
+        var user = await _users.GetUserByEmail(loginRequest.Email);
+
+        if (user == null)
+            return Unauthorized("Nieprawidłowy login");
+
+        var isPasswordValid = PasswordHash.VerifyPassword(loginRequest.Password, user.Password);
+
+        if (!isPasswordValid)
+            return Unauthorized("Hasło jest nieprawidłowe");
+
+        var token = jwtTokenService.GenerateToken(user.Id.ToString(), user.Email);
+
+        return Ok(new { Token = token });
     }
 }
