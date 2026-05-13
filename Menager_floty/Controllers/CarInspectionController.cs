@@ -1,14 +1,14 @@
 using BLL.Interfaces;
+using DAL.Dto;
 using Microsoft.AspNetCore.Mvc;
+using Model;
 
 namespace Menager_floty.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CarInspectionController(ICarInspectionService repo) : ControllerBase
+public class CarInspectionController(ICarInspectionService _repo) : ControllerBase
 {
-    private readonly ICarInspectionService _repo = repo;
-
     [HttpGet("isValid/{id}")]
     public async Task<IActionResult> IsValid(int id)
     {
@@ -24,4 +24,45 @@ public class CarInspectionController(ICarInspectionService repo) : ControllerBas
         
         return Ok(result);
     }
+
+    [HttpGet("inspection/{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = _repo.GetInspectionById(id);
+        
+        return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddInspection([FromBody] CarInspectionDto inspectionDto)
+    {
+        CarInspection newInspection = new()
+        {
+            Mileage = inspectionDto.Mileage,
+            ValidUntil = inspectionDto.ValidUntil,
+            CarId = inspectionDto.CarId,
+            DateOfInpection = inspectionDto.DateOfInpection
+        };
+
+        await _repo.AddInspection(newInspection);
+
+        return Created();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateInspection(int id, CarInspectionDto inspectionDto)
+    {
+        await _repo.UpdateInspection(id, inspectionDto);
+        
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteInspection(int id)
+    {
+        await _repo.DeleteInspection(id);
+        
+        return NoContent();  
+    }
+    
 }

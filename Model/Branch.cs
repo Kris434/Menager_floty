@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Components;
 
 namespace Model;
 
@@ -12,7 +13,10 @@ public class Branch
     
     public List<Car>? Cars { get; set; }
     
+    
     public List<Trailer>? Trailers { get; set; }
+    
+    public List<Tasks>? Tasks { get; set; }
     
     public int UserId { get; set; }
 }

@@ -1,25 +1,20 @@
 using BLL.Interfaces;
 using DAL.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 
 namespace Menager_floty.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class TrailerController : ControllerBase
+public class TrailerController(ITrailerService trailerService) : ControllerBase
 {
-    private readonly ITrailerService _service;
-
-    public TrailerController(ITrailerService trailerService)
-    {
-        _service = trailerService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetAllTrailers()
     {
-        var trailers = await _service.GetAllTrailers();
+        var trailers = await trailerService.GetAllTrailers();
 
         return Ok(trailers);
     }
@@ -38,7 +33,7 @@ public class TrailerController : ControllerBase
             AgregatInspectionId = trailer.AgregatInspectionsId
         };
 
-        await _service.AddTrailer(newTrailer);
+        await trailerService.AddTrailer(newTrailer);
 
         return Created();
     }
@@ -53,7 +48,7 @@ public class TrailerController : ControllerBase
             InspectionId = newTrailer.InspectionId
         };
         
-        await _service.UpdateTrailer(trailer, id);
+        await trailerService.UpdateTrailer(trailer, id);
 
         return Ok();
     }
@@ -61,8 +56,120 @@ public class TrailerController : ControllerBase
     [HttpDelete("{trailerId}")]
     public async Task<IActionResult> DeleteTrailer(int trailerId)
     {
-        await _service.DeleteTrailer(trailerId);
+        await trailerService.DeleteTrailer(trailerId);
 
         return NoContent();
+    }
+
+    [HttpGet("inspections/{trailerId}")]
+    public async Task<IActionResult> GetAllInspectionsByTrailerId(int trailerId)
+    {
+        var result = await trailerService.GetAllInspectionsByTrailerId(trailerId);
+        
+        return Ok(result);
+    }
+
+    [HttpPost("inspections")]
+    public async Task<IActionResult> AddInspection([FromBody] TrailerInspectionDto newInspection)
+    {
+        TrailerInspection inspection = new()
+        {
+            DateOfInpection = newInspection.DateOfInpection,
+            ValidUntil = newInspection.ValidUntil,
+            TrailerId = newInspection.TrailerId
+        };
+
+        await trailerService.AddInspection(inspection);
+        
+        return Created();
+    }
+
+    [HttpPut("inspections/{id}")]
+    public async Task<IActionResult> UpdateTrailerInspection([FromBody] TrailerInspectionDto inspection, int id)
+    {
+        TrailerInspection trailerInspection = new()
+        {
+            DateOfInpection = inspection.DateOfInpection,
+            ValidUntil = inspection.ValidUntil,
+            TrailerId = inspection.TrailerId
+        };
+        
+        await trailerService.UpdateInspection(trailerInspection, id);
+        
+        return NoContent();
+    }
+
+    [HttpDelete("inspections/{id}")]
+    public async Task<IActionResult> DeleteInspection(int id)
+    {
+        await trailerService.DeleteInspection(id);
+        
+        return NoContent();   
+    }
+    
+    [HttpGet("refrigeratorInspections/trailer/{trailerId}")]
+    public async Task<IActionResult> GetAllRefrigeratorInspectionsByTrailerId(int trailerId)
+    {
+        var result = await trailerService.GetAllRefrigeratorInspectionsByTrailerId(trailerId);
+        
+        return Ok(result);
+    }
+
+    [HttpGet("refrigeratorInspections")]
+    public async Task<IActionResult> GetAllRefrigeratorInspections()
+    {
+        var result = await trailerService.GetAllRefrigeratorInspections();
+        
+        return Ok(result);
+    }
+    
+    [HttpGet("refrigeratorInspections/{id}")]
+    public async Task<IActionResult> GetRefrigeratorInspectionById(int id)
+    {
+        var result = await trailerService.GetRefrigeratorInspectionById(id);
+        
+        return Ok(result);
+    }
+
+    [HttpPost("refrigeratorInspections")]
+    public async Task<IActionResult> AddRefrigeratorInspection(
+        [FromBody] TrailerRefrigeratorInspectionDto inspectionDto)
+    {
+        TrailerRefrigeratorInspections newInspection = new TrailerRefrigeratorInspections()
+        {
+            DateOfIncpection = inspectionDto.DateOfInpection,
+            ValidUntil = inspectionDto.ValidUntil,
+            MotoHours = inspectionDto.MotoHours,
+            TrailerId = inspectionDto.TrailerId
+        };
+        
+        await trailerService.AddRefrigeratorInspection(newInspection);
+        
+        return Created();
+    }
+
+    [HttpPut("refrigeratorInspections/{id}")]
+    public async Task<IActionResult> UpdateRefrigeratorInspection(
+        [FromBody] TrailerRefrigeratorInspectionDto inspectionDto, int id)
+    {
+        TrailerRefrigeratorInspections newInspection = new TrailerRefrigeratorInspections()
+        {
+            DateOfIncpection = inspectionDto.DateOfInpection,
+            ValidUntil = inspectionDto.ValidUntil,
+            MotoHours = inspectionDto.MotoHours,
+            TrailerId = inspectionDto.TrailerId
+        };
+
+        await trailerService.UpdateRefrigeratorInspection(newInspection, id);
+        
+        return NoContent();
+    }
+
+    [HttpDelete("refrigeratorInspections/{id}")]
+    public async Task<IActionResult> DeleteRefrigeratorInspection(int id)
+    {
+        await trailerService.DeleteRefrigeratorInspection(id);
+        
+        return NoContent();  
     }
 }

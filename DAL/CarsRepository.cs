@@ -13,7 +13,7 @@ public class CarsRepository : ICarsRepository
         _context = context;
     }
 
-    public async Task<IQueryable<Car>> GetAll()
+    public async Task<IEnumerable<Car>> GetAll()
     {
         var result = _context.Car;
         return result;
@@ -28,6 +28,24 @@ public class CarsRepository : ICarsRepository
     public async Task AddCar(Car car)
     {
         await _context.Car.AddAsync(car);
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task UpdateCar(Car car)
+    {
+        var existingCar = await _context.Car.FindAsync(car.Id);
+
+        existingCar.Name = car.Name;
+        existingCar.BranchId = car.BranchId;
+        existingCar.InspectionId = car.InspectionId;
+        existingCar.Plate = car.Plate;
+        
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task DeleteCar(Car car)
+    {
+        _context.Car.Remove(car);
         await _context.SaveChangesAsync();
     }
 }

@@ -12,7 +12,17 @@ public interface ITrailerService
     Task DeleteTrailer(int trailerId);
     
     // Trailer inspection functions
+    Task<IEnumerable<TrailerInspection>> GetAllInspectionsByTrailerId(int trailerId);
     Task AddInspection(TrailerInspection trailerInspection);
-    Task UpdateInspection(TrailerInspection trailerInspection);
-    Task DeleteInspection(TrailerInspection trailerInspection);
+    Task UpdateInspection(TrailerInspection trailerInspection, int id);
+    Task DeleteInspection(int trailerInspection);
+    
+    // Trailer agregat inspection functions
+    Task<List<TrailerRefrigeratorInspections>> GetAllRefrigeratorInspections();
+    Task<IEnumerable<TrailerRefrigeratorInspections>> GetAllRefrigeratorInspectionsByTrailerId(int trailerId);
+    Task<TrailerRefrigeratorInspections> GetRefrigeratorInspectionById(int id);
+    Task AddRefrigeratorInspection(TrailerRefrigeratorInspections trailerRefrigeratorInspections);
+    Task UpdateRefrigeratorInspection(TrailerRefrigeratorInspections trailerRefrigeratorInspections, int id);
+    Task DeleteRefrigeratorInspection(int trailerRefrigeratorInspections);
+    
 }

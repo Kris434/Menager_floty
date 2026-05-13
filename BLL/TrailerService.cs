@@ -52,18 +52,77 @@ public class TrailerService : ITrailerService
         await _repository.Delete(trailer);
     }
 
-    public Task AddInspection(TrailerInspection trailerInspection)
+    public async Task<IEnumerable<TrailerInspection>> GetAllInspectionsByTrailerId(int trailerId)
     {
-        throw new NotImplementedException();
+        var result = await _repository.GetAllInspections();
+        
+        return result.Where(i => i.TrailerId == trailerId);
     }
 
-    public Task UpdateInspection(TrailerInspection trailerInspection)
+    public async Task AddInspection(TrailerInspection trailerInspection)
     {
-        throw new NotImplementedException();
+        await _repository.Add(trailerInspection);
     }
 
-    public Task DeleteInspection(TrailerInspection trailerInspection)
+    public async Task UpdateInspection(TrailerInspection trailerInspection, int id)
     {
-        throw new NotImplementedException();
+        TrailerInspection existingInspection = await _repository.GetInspectionById(id);
+        
+        existingInspection.DateOfInpection = trailerInspection.DateOfInpection;
+        existingInspection.ValidUntil = trailerInspection.ValidUntil;
+        existingInspection.TrailerId = trailerInspection.TrailerId;
+        
+        await _repository.Update(existingInspection);
+    }
+
+    public async Task DeleteInspection(int trailerInspection)
+    {   
+        await _repository.DeleteInspection(await _repository.GetInspectionById(trailerInspection));
+    }
+
+    public async Task<List<TrailerRefrigeratorInspections>> GetAllRefrigeratorInspections()
+    {
+        var result = await _repository.GetAllAgregatInspections();
+        return result.ToList();
+    }
+
+    public async Task<IEnumerable<TrailerRefrigeratorInspections>> GetAllRefrigeratorInspectionsByTrailerId(int trailerId)
+    {
+        var result = await _repository.GetAllAgregatInspections();
+        return result.Where(i => i.TrailerId == trailerId);
+    }
+
+    public async Task<TrailerRefrigeratorInspections> GetRefrigeratorInspectionById(int id)
+    {
+        var result = await _repository.GetRefrigeratorInspectionById(id);
+        return result;
+    }
+
+    public async Task AddRefrigeratorInspection(TrailerRefrigeratorInspections trailerRefrigeratorInspections)
+    {
+        TrailerRefrigeratorInspections newInspection = new TrailerRefrigeratorInspections()
+        {
+            DateOfIncpection = trailerRefrigeratorInspections.DateOfIncpection,
+            ValidUntil = trailerRefrigeratorInspections.ValidUntil,
+            TrailerId = trailerRefrigeratorInspections.TrailerId
+        };
+
+        await _repository.Add(newInspection);
+    }
+
+    public async Task UpdateRefrigeratorInspection(TrailerRefrigeratorInspections trailerRefrigeratorInspections, int id)
+    {
+        TrailerRefrigeratorInspections existingInspection = await _repository.GetRefrigeratorInspectionById(id);
+        
+        existingInspection.DateOfIncpection = trailerRefrigeratorInspections.DateOfIncpection;
+        existingInspection.ValidUntil = trailerRefrigeratorInspections.ValidUntil;
+        existingInspection.TrailerId = trailerRefrigeratorInspections.TrailerId;
+        
+        await _repository.Update(existingInspection);
+    }
+
+    public async Task DeleteRefrigeratorInspection(int trailerRefrigeratorInspections)
+    {
+        await _repository.DeleteAgregatInspection(await _repository.GetRefrigeratorInspectionById(trailerRefrigeratorInspections));
     }
 }

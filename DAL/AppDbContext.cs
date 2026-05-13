@@ -21,4 +21,6 @@ public class AppDbContext : DbContext
     
     public DbSet<Branch> Branches { get; set; }
     
+    public DbSet<Tasks> Tasks { get; set; }
+    
 }

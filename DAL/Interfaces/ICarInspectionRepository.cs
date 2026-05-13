@@ -8,4 +8,5 @@ public interface ICarInspectionRepository
     Task DeleteInspection(CarInspection inspection);
     Task UpdateInspection(CarInspection inspection);
     Task<IQueryable<CarInspection>> GetAllByCarId(int carId);
+    Task<CarInspection> GetInspectionById(int id);
 }

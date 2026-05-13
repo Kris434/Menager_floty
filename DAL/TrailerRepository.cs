@@ -48,7 +48,13 @@ public class TrailerRepository : ITrailerRepository
 
     public async Task<IEnumerable<Trailer>> GetAll()
     {
-        List<Trailer> result = await _context.Trailer.ToListAsync();
+        var result = await _context.Trailer.ToListAsync();
+        return result;
+    }
+
+    public async Task<TrailerInspection> GetInspectionById(int id)
+    {
+        var result = await _context.TrailerInspection.FindAsync(id);
         return result;
     }
 
@@ -60,7 +66,17 @@ public class TrailerRepository : ITrailerRepository
 
     public async Task Update(TrailerInspection trailerInspection)
     {
-        _context.TrailerInspection.Update(trailerInspection);
+        var existingInspection = await _context.TrailerInspection.FindAsync(trailerInspection.Id);
+
+        if (existingInspection == null)
+        {
+            throw new KeyNotFoundException($"Trailer with ID {trailerInspection.Id} not found.");
+        }
+
+        existingInspection.TrailerId = trailerInspection.TrailerId;
+        existingInspection.DateOfInpection = trailerInspection.DateOfInpection;
+        existingInspection.ValidUntil = trailerInspection.ValidUntil;
+
         await _context.SaveChangesAsync();
     }
 
@@ -76,23 +92,49 @@ public class TrailerRepository : ITrailerRepository
         return result;
     }
 
-    public Task Add(TrailerRefrigeratorInspections trailerRefrigeratorInspections)
+    public async Task<TrailerRefrigeratorInspections> GetRefrigeratorInspectionById(int id)
     {
-        throw new NotImplementedException();
+        TrailerRefrigeratorInspections? result = await _context.TrailerAgregatInspections.FindAsync(id);
+        
+        return result;
     }
 
-    public Task Update(TrailerRefrigeratorInspections trailerRefrigeratorInspections)
+    public async Task Add(TrailerRefrigeratorInspections trailerRefrigeratorInspections)
     {
-        throw new NotImplementedException();
+        _context.TrailerAgregatInspections.Add(trailerRefrigeratorInspections);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeleteAgregatInspection(TrailerRefrigeratorInspections trailerRefrigeratorInspections)
+    public async Task Update(TrailerRefrigeratorInspections trailerRefrigeratorInspections)
     {
-        throw new NotImplementedException();
+        TrailerRefrigeratorInspections existing = await _context.TrailerAgregatInspections.FindAsync(trailerRefrigeratorInspections.Id);
+        
+        if(existing == null)
+            throw new KeyNotFoundException($"Trailer with ID {trailerRefrigeratorInspections.Id} not found.");
+
+        existing.DateOfIncpection = trailerRefrigeratorInspections.DateOfIncpection;
+        existing.ValidUntil = trailerRefrigeratorInspections.ValidUntil;
+        existing.TrailerId = trailerRefrigeratorInspections.TrailerId;
+        
+        await _context.SaveChangesAsync();
     }
 
-    public Task<IQueryable<TrailerRefrigeratorInspections>> GetAllAgregatInspections()
+    public async Task DeleteAgregatInspection(TrailerRefrigeratorInspections trailerRefrigeratorInspections)
     {
-        throw new NotImplementedException();
+        _context.TrailerAgregatInspections.Remove(trailerRefrigeratorInspections);
+        await _context.SaveChangesAsync();
+    }
+
+    public Task<IEnumerable<TrailerRefrigeratorInspections>> GetAllAgregatInspections()
+    {
+        try
+        {
+            var result = _context.TrailerAgregatInspections;
+            return Task.FromResult<IEnumerable<TrailerRefrigeratorInspections>>(result);
+        }
+        catch (Exception exception)
+        {
+            return Task.FromException<IEnumerable<TrailerRefrigeratorInspections>>(exception);
+        }
     }
 }

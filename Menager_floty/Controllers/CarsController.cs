@@ -8,32 +8,22 @@ namespace Menager_floty.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CarsController : ControllerBase
+public class CarsController(ICarService carsService) : ControllerBase
 {
-    private readonly ICarService _carsService;
-    
-    public CarsController(ICarService carsService)
-    {
-        _carsService = carsService;
-    }
-
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        var result = await _carsService.GetById(id);
+        var result = await carsService.GetById(id);
 
         return Ok(result);
     }
 
     [HttpGet("{id}/cars")]
-    public async Task<IActionResult> GetByUser(int id)
+    public async Task<IActionResult> GetByBranch(int id)
     {
-        var result = await _carsService.GetByBranch(id);
+        var result = await carsService.GetByBranch(id);
         
-        if(result != null)
-            return Ok(result);
-        else
-            return NotFound();
+        return Ok(result);
     }
 
     [HttpPost]
@@ -47,8 +37,24 @@ public class CarsController : ControllerBase
             BranchId = dto.BranchId
         };
         
-        await _carsService.Add(car);
+        await carsService.Add(car);
         
         return Created($"api/cars/{car.Id}", car);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCar(int id, [FromBody] Car car)
+    {
+        await carsService.Update(car, id);
+        
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCar(int id)
+    {
+        await carsService.Delete(id);
+        
+        return NoContent();
     }
 }

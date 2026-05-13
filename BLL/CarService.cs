@@ -33,4 +33,21 @@ public class CarService : ICarService
     {
         await _repo.AddCar(car);
     }
+    
+    public async Task Update(Car car, int id)
+    {
+        Car toUpdate = await _repo.GetCarById(id);
+        
+        toUpdate.Name = car.Name;
+        toUpdate.BranchId = car.BranchId;
+        toUpdate.InspectionId = car.InspectionId;
+        toUpdate.Plate = car.Plate;
+        
+        await _repo.UpdateCar(toUpdate);
+    }
+    
+    public async Task Delete(int id)
+    {
+        await _repo.DeleteCar(await _repo.GetCarById(id));
+    }
 }

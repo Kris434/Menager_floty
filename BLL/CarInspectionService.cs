@@ -1,4 +1,5 @@
 using BLL.Interfaces;
+using DAL.Dto;
 using DAL.Interfaces;
 using Model;
 
@@ -24,5 +25,33 @@ public class CarInspectionService : ICarInspectionService
     {
         var result = await _repo.GetAllByCarId(carId);
         return result.ToList();
+    }
+    
+    public async Task AddInspection(CarInspection inspection)
+    {
+        await _repo.AddInspection(inspection);
+    }
+    
+    public async Task UpdateInspection(int id, CarInspectionDto inspection)
+    {
+        CarInspection existing = _repo.GetInspectionById(id).Result;
+        
+        existing.CarId = inspection.CarId;
+        existing.DateOfInpection = inspection.DateOfInpection;
+        existing.ValidUntil = inspection.ValidUntil;
+        
+        await _repo.UpdateInspection(existing);
+    }
+    
+    public async Task DeleteInspection(int id)
+    {
+        await _repo.DeleteInspection(await _repo.GetInspectionById(id));
+    }
+
+    public async Task<CarInspection> GetInspectionById(int id)
+    {
+        var result = await _repo.GetInspectionById(id);
+        
+        return result;
     }
 }

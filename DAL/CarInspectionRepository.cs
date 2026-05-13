@@ -12,24 +12,38 @@ public class CarInspectionRepository : ICarInspectionRepository
         _context = context;
     }
     
-    public Task AddInspection(CarInspection inspection)
+    public async Task AddInspection(CarInspection inspection)
     {
-        throw new NotImplementedException();
+        _context.CarInspections.Add(inspection);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeleteInspection(CarInspection inspection)
+    public async Task DeleteInspection(CarInspection inspection)
     {
-        throw new NotImplementedException();
+        _context.CarInspections.Remove(inspection);
+        await _context.SaveChangesAsync();
     }
 
-    public Task UpdateInspection(CarInspection inspection)
+    public async Task UpdateInspection(CarInspection inspection)
     {
-        throw new NotImplementedException();
+        CarInspection existingInspection = await _context.CarInspections.FindAsync(inspection.Id);
+        
+        existingInspection.CarId = inspection.CarId;
+        existingInspection.DateOfInpection = inspection.DateOfInpection;
+        existingInspection.ValidUntil = inspection.ValidUntil;
+        
+        await _context.SaveChangesAsync();
     }
 
     public async Task<IQueryable<CarInspection>> GetAllByCarId(int carId)
     {
         var result = _context.CarInspections.Where(i => i.CarId == carId);
         return result;
+    }
+
+    public async Task<CarInspection> GetInspectionById(int id)
+    {
+        var result = await _context.CarInspections.FindAsync(id);
+        return result;   
     }
 }

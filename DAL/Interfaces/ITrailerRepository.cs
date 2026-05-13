@@ -12,14 +12,16 @@ public interface ITrailerRepository
     Task<IEnumerable<Trailer>> GetAll();
     
     // Trailer inspections
+    Task<TrailerInspection> GetInspectionById(int id);
     Task Add(TrailerInspection trailerInspection);
     Task Update(TrailerInspection trailerInspection);
     Task DeleteInspection(TrailerInspection trailer);
     Task<IEnumerable<TrailerInspection>> GetAllInspections();
     
     // Trailer agregat inspections
+    Task<TrailerRefrigeratorInspections> GetRefrigeratorInspectionById(int id);
     Task Add(TrailerRefrigeratorInspections trailerRefrigeratorInspections);
     Task Update(TrailerRefrigeratorInspections trailerRefrigeratorInspections);
     Task DeleteAgregatInspection(TrailerRefrigeratorInspections trailerRefrigeratorInspections);
-    Task<IQueryable<TrailerRefrigeratorInspections>> GetAllAgregatInspections();
+    Task<IEnumerable<TrailerRefrigeratorInspections>> GetAllAgregatInspections();
 }
