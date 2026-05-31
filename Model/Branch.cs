@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Components;
 
 namespace Model;
@@ -18,5 +19,5 @@ public class Branch
     
     public List<Tasks>? Tasks { get; set; }
     
-    public int UserId { get; set; }
+    public List<User> Users { get; set; } = new List<User>();
 }

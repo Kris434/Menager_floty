@@ -35,7 +35,7 @@ public class BranchService(IBranchRepository repository) : IBranchService
         toUpdate.Tasks = branch.Tasks;
         toUpdate.Trailers = branch.Trailers;
         toUpdate.Cars = branch.Cars;
-        toUpdate.UserId = branch.UserId;
+        toUpdate.Users = branch.Users;
         
         await _repository.Update(toUpdate);
     }
@@ -43,5 +43,10 @@ public class BranchService(IBranchRepository repository) : IBranchService
     public async Task Delete(int id)
     {
         await _repository.Delete(await _repository.GetById(id));
+    }
+
+    public async Task DeleteUserFromBranch(int userId, int branchId)
+    {
+        await _repository.DeleteUserFromBranch(userId, branchId);
     }
 }

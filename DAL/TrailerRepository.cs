@@ -42,13 +42,19 @@ public class TrailerRepository : ITrailerRepository
 
     public async Task<Trailer> GetById(int id)
     {
-        var result = await _context.Trailer.FindAsync(id);
+        var result = await _context.Trailer
+            .Include(i => i.InspectionId)
+            .Include(i => i.AgregatInspectionId)
+            .FirstAsync(t => t.Id == id);
         return result;
     }
 
     public async Task<IEnumerable<Trailer>> GetAll()
     {
-        var result = await _context.Trailer.ToListAsync();
+        var result = await _context.Trailer
+            .Include(i => i.InspectionId)
+            .Include(i => i.AgregatInspectionId)
+            .ToListAsync();
         return result;
     }
 
@@ -74,7 +80,7 @@ public class TrailerRepository : ITrailerRepository
         }
 
         existingInspection.TrailerId = trailerInspection.TrailerId;
-        existingInspection.DateOfInpection = trailerInspection.DateOfInpection;
+        existingInspection.DateOfInspection = trailerInspection.DateOfInspection;
         existingInspection.ValidUntil = trailerInspection.ValidUntil;
 
         await _context.SaveChangesAsync();
@@ -112,7 +118,7 @@ public class TrailerRepository : ITrailerRepository
         if(existing == null)
             throw new KeyNotFoundException($"Trailer with ID {trailerRefrigeratorInspections.Id} not found.");
 
-        existing.DateOfIncpection = trailerRefrigeratorInspections.DateOfIncpection;
+        existing.DateOfInspection = trailerRefrigeratorInspections.DateOfInspection;
         existing.ValidUntil = trailerRefrigeratorInspections.ValidUntil;
         existing.TrailerId = trailerRefrigeratorInspections.TrailerId;
         

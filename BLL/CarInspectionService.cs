@@ -37,7 +37,7 @@ public class CarInspectionService : ICarInspectionService
         CarInspection existing = _repo.GetInspectionById(id).Result;
         
         existing.CarId = inspection.CarId;
-        existing.DateOfInpection = inspection.DateOfInpection;
+        existing.DateOfInspection = inspection.DateOfInspection;
         existing.ValidUntil = inspection.ValidUntil;
         
         await _repo.UpdateInspection(existing);

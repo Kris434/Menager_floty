@@ -9,4 +9,5 @@ public interface IBranchRepository
     Task Add(Branch branch);
     Task Update(Branch branch);
     Task Delete(Branch branch);
+    Task DeleteUserFromBranch(int userId, int branchId);
 }

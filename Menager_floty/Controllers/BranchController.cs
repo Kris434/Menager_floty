@@ -7,9 +7,8 @@ namespace Menager_floty.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BranchController(IBranchService service) : ControllerBase
+public class BranchController(IBranchService _service, IUserService _users) : ControllerBase
 {
-    private readonly IBranchService _service = service;
     
     [HttpGet]
     public async Task<ActionResult<List<Branch>>> GetAll()
@@ -26,14 +25,25 @@ public class BranchController(IBranchService service) : ControllerBase
         
         return Ok(result);
     }
+
+    [HttpGet("user/{id}")]
+    public async Task<IActionResult> GetByUserId(int id)
+    {
+        var result = await _service.GetAll();
+        var userBranches = result.Where(b => b.Users.Any(u => u.Id == id));
+        
+        return Ok(userBranches);
+    }
     
     [HttpPost]
     public async Task<ActionResult<Branch>> Add([FromBody] BranchDto branch)
     {
+        User user = _users.GetUserById(branch.userId).Result;
+        
         Branch newBranch = new()
         {
-            UserId = branch.userId,
-            BranchName = branch.BranchName
+            BranchName = branch.BranchName,
+            Users = new List<User> { user }
         };
         
         await _service.Add(newBranch);
@@ -49,11 +59,40 @@ public class BranchController(IBranchService service) : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.Delete(id);
         
         return NoContent();
+    }
+    
+    [HttpPost("{branchId}/users")]
+    public async Task<IActionResult> AddUserToBranch(int branchId, [FromBody] AddUserToBranchDto request)
+    {
+        var branch = await _service.GetById(branchId);
+
+        var user = await _users.GetUserById(request.UserId);
+        
+        if (branch.Users.Any(u => u.Id == user.Id))
+            return BadRequest("Ten użytkownik jest już przypisany do tego oddziału.");
+        
+        branch.Users.Add(user);
+        await _service.Update(branch, branchId);
+
+        return Ok();
+    }
+    
+    [HttpDelete("{branchId}/users/{userId}")]
+    public async Task<IActionResult> DeleteUserFromBranch(int branchId, int userId)
+    {
+        await _service.DeleteUserFromBranch(userId, branchId);
+        
+        return NoContent();
+    }
+
+    public class AddUserToBranchDto
+    {
+        public int UserId { get; set; }
     }
 }

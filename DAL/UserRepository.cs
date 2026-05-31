@@ -20,6 +20,27 @@ public class UserRepository : IUserRepository
         return result;
     }
 
+    public async Task<User> GetUserByLogin(string login)
+    {
+        var result = await _context.User.FirstOrDefaultAsync(u => u.Login == login);
+        
+        return result;   
+    }
+
+    public async Task<User> GetUserById(int id)
+    {
+        var result = await _context.User.FindAsync(id);
+        return result;  
+    }
+
+    public async Task<IEnumerable<User>> GetAll()
+    {
+        var result = await _context.User
+            .Include(u => u.Branches)
+            .ToListAsync();
+        return result;
+    }
+
     public async Task AddUser(User user)
     {
         await _context.User.AddAsync(user);

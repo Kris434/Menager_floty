@@ -29,4 +29,22 @@ public class UserService : IUserService
         
         return result;
     }
+
+    public async Task<User> GetUserByLogin(string login)
+    {
+        var result = await _userRepository.GetUserByLogin(login);
+        return result;  
+    }
+
+    public async Task<User> GetUserById(int id)
+    {
+        var result = await _userRepository.GetUserById(id);
+        return result; 
+    }
+
+    public async Task<List<User>> GetAll()
+    {
+        var result = (List<User>)await _userRepository.GetAll();
+        return result;
+    }
 }

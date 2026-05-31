@@ -1,6 +1,6 @@
 ﻿services:
   menager_floty:
-    image: menager_floty-dev
+    image: menager_floty_backend
     container_name: menager_floty_app
     build:
       context: .
@@ -10,7 +10,7 @@
       - "8080:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_URLS: http://0.0.0.0:8080
       ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=menagerFloty;Username=postgres;Password=root
       Jwt__Key: BardzoSekretnyKluczMinimum32ZnakiDev
       Jwt__Issuer: Backend
@@ -21,10 +21,28 @@
       - .:/src
       - menager_floty_nuget:/root/.nuget/packages
     working_dir: /src/Menager_floty
-    command: dotnet watch run --project Menager_floty.csproj --urls http://+:8080
     depends_on:
       postgres:
         condition: service_healthy
+
+  frontend:
+    image: menager_floty_frontend
+    container_name: menager_floty_frontend
+    build:
+      context: /Users/krzysztofbicz/Documents/GitHub/Menager_floty_frontend/menager_floty_front
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - /Users/krzysztofbicz/Documents/GitHub/Menager_floty_frontend/menager_floty_front:/app
+      - /app/node_modules
+    environment:
+      - WDS_SOCKET_PORT=0
+      - REACT_APP_API_URL=http://localhost:8080
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - menager_floty
 
   postgres:
     image: postgres:16-alpine

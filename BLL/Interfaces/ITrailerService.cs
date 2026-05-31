@@ -7,6 +7,7 @@ public interface ITrailerService
     // Trailer functions
     Task<List<Trailer>> GetAllTrailers();
     Task<Trailer> GetTrailerById(int id);
+    Task<List<Trailer>> GetTrailersByBranchId(int branchId);
     Task AddTrailer(Trailer trailer);
     Task UpdateTrailer(Trailer trailer, int id);
     Task DeleteTrailer(int trailerId);

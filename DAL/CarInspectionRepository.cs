@@ -29,7 +29,7 @@ public class CarInspectionRepository : ICarInspectionRepository
         CarInspection existingInspection = await _context.CarInspections.FindAsync(inspection.Id);
         
         existingInspection.CarId = inspection.CarId;
-        existingInspection.DateOfInpection = inspection.DateOfInpection;
+        existingInspection.DateOfInspection = inspection.DateOfInspection;
         existingInspection.ValidUntil = inspection.ValidUntil;
         
         await _context.SaveChangesAsync();

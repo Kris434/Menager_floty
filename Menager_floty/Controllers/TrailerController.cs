@@ -19,6 +19,21 @@ public class TrailerController(ITrailerService trailerService) : ControllerBase
         return Ok(trailers);
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetTrailerById(int id)
+    {
+        var result = await trailerService.GetTrailerById(id);
+
+        return Ok(result);
+    }
+
+    [HttpGet("branches/{id}")]
+    public async Task<IActionResult> GetTrailersByBranchId(int id)
+    {
+        var trailers = await trailerService.GetTrailersByBranchId(id);
+        return Ok(trailers);
+    }
+
     [HttpPost]
     public async Task<IActionResult> AddTrailer([FromBody] TrailerDto trailer)
     {
@@ -30,7 +45,7 @@ public class TrailerController(ITrailerService trailerService) : ControllerBase
             BranchId = trailer.BranchId,
             IsBlocked = false,
             FuelLevel = trailer.FuelLevel,
-            AgregatInspectionId = trailer.AgregatInspectionsId
+            AgregatInspectionId = trailer.AgregatInspectionId
         };
 
         await trailerService.AddTrailer(newTrailer);
@@ -45,7 +60,11 @@ public class TrailerController(ITrailerService trailerService) : ControllerBase
         {
             Plate = newTrailer.Plate,
             Capacity = newTrailer.Capacity,
-            InspectionId = newTrailer.InspectionId
+            InspectionId = newTrailer.InspectionId,
+            AgregatInspectionId = newTrailer.AgregatInspectionId,
+            BranchId = newTrailer.BranchId,
+            IsBlocked = newTrailer.IsBlocked,
+            FuelLevel = newTrailer.FuelLevel
         };
         
         await trailerService.UpdateTrailer(trailer, id);
@@ -74,7 +93,7 @@ public class TrailerController(ITrailerService trailerService) : ControllerBase
     {
         TrailerInspection inspection = new()
         {
-            DateOfInpection = newInspection.DateOfInpection,
+            DateOfInspection = newInspection.DateOfInpection,
             ValidUntil = newInspection.ValidUntil,
             TrailerId = newInspection.TrailerId
         };
@@ -89,7 +108,7 @@ public class TrailerController(ITrailerService trailerService) : ControllerBase
     {
         TrailerInspection trailerInspection = new()
         {
-            DateOfInpection = inspection.DateOfInpection,
+            DateOfInspection = inspection.DateOfInpection,
             ValidUntil = inspection.ValidUntil,
             TrailerId = inspection.TrailerId
         };
@@ -137,7 +156,7 @@ public class TrailerController(ITrailerService trailerService) : ControllerBase
     {
         TrailerRefrigeratorInspections newInspection = new TrailerRefrigeratorInspections()
         {
-            DateOfIncpection = inspectionDto.DateOfInpection,
+            DateOfInspection = inspectionDto.DateOfInspection,
             ValidUntil = inspectionDto.ValidUntil,
             MotoHours = inspectionDto.MotoHours,
             TrailerId = inspectionDto.TrailerId
@@ -154,7 +173,7 @@ public class TrailerController(ITrailerService trailerService) : ControllerBase
     {
         TrailerRefrigeratorInspections newInspection = new TrailerRefrigeratorInspections()
         {
-            DateOfIncpection = inspectionDto.DateOfInpection,
+            DateOfInspection = inspectionDto.DateOfInspection,
             ValidUntil = inspectionDto.ValidUntil,
             MotoHours = inspectionDto.MotoHours,
             TrailerId = inspectionDto.TrailerId

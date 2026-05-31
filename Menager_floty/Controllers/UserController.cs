@@ -33,6 +33,15 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var result = await _users.GetAll();
+        
+        return Ok(result);
+    }
+
     [HttpPost]
     public async Task<IActionResult> AddUser([FromBody] UserDto dto)
     {
@@ -42,7 +51,9 @@ public class UserController : ControllerBase
             Email = dto.Email,
             Password = dto.Password,
             FirstName = dto.FirstName,
-            LastName = dto.LastName
+            LastName = dto.LastName,
+            Login = dto.Login,
+            Role = "User"
         };
         
         await _users.AddUser(user);
@@ -53,7 +64,7 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginRequest)
     {
-        var user = await _users.GetUserByEmail(loginRequest.Email);
+        var user = await _users.GetUserByLogin(loginRequest.Login);
 
         if (user == null)
             return Unauthorized("Nieprawidłowy login");
@@ -63,8 +74,8 @@ public class UserController : ControllerBase
         if (!isPasswordValid)
             return Unauthorized("Hasło jest nieprawidłowe");
 
-        var token = jwtTokenService.GenerateToken(user.Id.ToString(), user.Email);
+        var token = jwtTokenService.GenerateToken(user.Id.ToString(), user.Email, user.Role);
 
-        return Ok(new { Token = token });
+        return Ok(new { Token = token, UserId = user.Id });
     }
 }

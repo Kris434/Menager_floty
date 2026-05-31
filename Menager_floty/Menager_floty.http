@@ -19,3 +19,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hc
 DELETE {{Menager_floty_HostAddress}}/api/Cars/3
 
 ###
+
+GET {{Menager_floty_HostAddress}}/api/branch/user/6
+
+###

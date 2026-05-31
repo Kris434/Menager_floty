@@ -19,6 +19,12 @@ public class TrailerService : ITrailerService
         return result;
     }
 
+    public async Task<List<Trailer>> GetTrailersByBranchId(int branchId)
+    {
+        var result = await _repository.GetAll();
+        return result.Where(t => t.BranchId == branchId).ToList();
+    }
+
     public async Task<Trailer> GetTrailerById(int id)
     {
         Trailer trailer = await _repository.GetById(id);
@@ -68,7 +74,7 @@ public class TrailerService : ITrailerService
     {
         TrailerInspection existingInspection = await _repository.GetInspectionById(id);
         
-        existingInspection.DateOfInpection = trailerInspection.DateOfInpection;
+        existingInspection.DateOfInspection = trailerInspection.DateOfInspection;
         existingInspection.ValidUntil = trailerInspection.ValidUntil;
         existingInspection.TrailerId = trailerInspection.TrailerId;
         
@@ -102,8 +108,9 @@ public class TrailerService : ITrailerService
     {
         TrailerRefrigeratorInspections newInspection = new TrailerRefrigeratorInspections()
         {
-            DateOfIncpection = trailerRefrigeratorInspections.DateOfIncpection,
+            DateOfInspection = trailerRefrigeratorInspections.DateOfInspection,
             ValidUntil = trailerRefrigeratorInspections.ValidUntil,
+            MotoHours = trailerRefrigeratorInspections.MotoHours,
             TrailerId = trailerRefrigeratorInspections.TrailerId
         };
 
@@ -114,7 +121,7 @@ public class TrailerService : ITrailerService
     {
         TrailerRefrigeratorInspections existingInspection = await _repository.GetRefrigeratorInspectionById(id);
         
-        existingInspection.DateOfIncpection = trailerRefrigeratorInspections.DateOfIncpection;
+        existingInspection.DateOfInspection = trailerRefrigeratorInspections.DateOfInspection;
         existingInspection.ValidUntil = trailerRefrigeratorInspections.ValidUntil;
         existingInspection.TrailerId = trailerRefrigeratorInspections.TrailerId;
         

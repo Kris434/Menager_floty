@@ -9,6 +9,6 @@ public class TrailerDto
     public int FuelLevel { get; set; }
     public bool IsBlocked { get; set; }
     public List<TrailerInspection>? InspectionId { get; set; }
-    public List<TrailerRefrigeratorInspections>? AgregatInspectionsId { get; set; }
+    public List<TrailerRefrigeratorInspections>? AgregatInspectionId { get; set; }
     public int BranchId { get; set; }
 }

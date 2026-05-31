@@ -15,7 +15,8 @@ public class CarsRepository : ICarsRepository
 
     public async Task<IEnumerable<Car>> GetAll()
     {
-        var result = _context.Car;
+        var result = _context.Car
+            .Include(c => c.InspectionId);
         return result;
     }
     

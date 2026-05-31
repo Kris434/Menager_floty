@@ -22,6 +22,21 @@ namespace DAL.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("BranchUser", b =>
+                {
+                    b.Property<int>("BranchesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("BranchesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("BranchUser");
+                });
+
             modelBuilder.Entity("Model.Branch", b =>
                 {
                     b.Property<int>("Id")
@@ -34,12 +49,7 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Branches");
                 });
@@ -81,7 +91,7 @@ namespace DAL.Migrations
                     b.Property<int>("CarId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("DateOfInpection")
+                    b.Property<DateTime>("DateOfInspection")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Mileage")
@@ -176,7 +186,7 @@ namespace DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateOfInpection")
+                    b.Property<DateTime>("DateOfInspection")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("TrailerId")
@@ -200,7 +210,7 @@ namespace DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateOfIncpection")
+                    b.Property<DateTime>("DateOfInspection")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("MotoHours")
@@ -240,7 +250,15 @@ namespace DAL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -249,11 +267,17 @@ namespace DAL.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Model.Branch", b =>
+            modelBuilder.Entity("BranchUser", b =>
                 {
+                    b.HasOne("Model.Branch", null)
+                        .WithMany()
+                        .HasForeignKey("BranchesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Model.User", null)
-                        .WithMany("Branches")
-                        .HasForeignKey("UserId")
+                        .WithMany()
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -331,11 +355,6 @@ namespace DAL.Migrations
                     b.Navigation("AgregatInspectionId");
 
                     b.Navigation("InspectionId");
-                });
-
-            modelBuilder.Entity("Model.User", b =>
-                {
-                    b.Navigation("Branches");
                 });
 #pragma warning restore 612, 618
         }

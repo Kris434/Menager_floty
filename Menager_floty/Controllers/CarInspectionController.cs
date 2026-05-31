@@ -39,9 +39,9 @@ public class CarInspectionController(ICarInspectionService _repo) : ControllerBa
         CarInspection newInspection = new()
         {
             Mileage = inspectionDto.Mileage,
-            ValidUntil = inspectionDto.ValidUntil,
+            ValidUntil = DateTime.SpecifyKind(inspectionDto.ValidUntil, DateTimeKind.Utc),
             CarId = inspectionDto.CarId,
-            DateOfInpection = inspectionDto.DateOfInpection
+            DateOfInspection = DateTime.SpecifyKind(inspectionDto.DateOfInspection, DateTimeKind.Utc)
         };
 
         await _repo.AddInspection(newInspection);

@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using BLL;
 using BLL.Interfaces;
 using DAL;
@@ -69,6 +70,7 @@ builder.Services.AddScoped<ICarsRepository, CarsRepository>();
 builder.Services.AddScoped<ICarInspectionRepository, CarInspectionRepository>();
 builder.Services.AddScoped<ITrailerRepository, TrailerRepository>();
 builder.Services.AddScoped<IBranchRepository, BranchRepository>();
+builder.Services.AddScoped<ITasksRepository, TasksRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICarService, CarService>();
@@ -76,6 +78,12 @@ builder.Services.AddScoped<ICarInspectionService, CarInspectionService>();
 builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<ITrailerService, TrailerService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
+builder.Services.AddScoped<ITasksService, TasksService>();
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
